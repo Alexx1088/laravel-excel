@@ -29,26 +29,34 @@ class UserController extends Controller
       $writer->save($filepathdes);*/
 
 
-   /*try {
-          Excel::import(new UsersImport, 'excel/import/users.xls');
+   try {
 
-          return redirect('/')->with('success', 'All good!');
+       if (Excel::import(new UsersImport, 'excel/import/users.xls')) {
+
+           throw new Exception('import is ok!');
+       }
+   } catch (Exception $exception) {
+       $exception->getMessage();
+       if ($exception->getMessage() !== 'import is ok'){
+           dd('failure');
+       }
+       /* return redirect('/')->with('success', 'All good!');*/
+
+
+
       } catch (FileNotFoundException $e) {
-          dd(1111/*$e->getMessage());
-      }*/
+          dd($e->getMessage());
+      }
 
-      $check = ProverkaModel::all();
-
+     /* $check = ProverkaModel::all();
 
       try {
           if (!file_exists($check)) {
               throw new Exception('file not found');
           }
       } catch (Exception $e) {
-
           echo $e->getMessage();
-
-      }
+      }*/
 
 
 
