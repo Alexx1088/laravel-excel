@@ -30,8 +30,15 @@
             @error('excel_file')
             <span class="text-danger">{{ $message }}</span>
             @enderror
-
         </form>
+
+        @if(Session::has('import_errors'))
+@foreach(Session::get('import_errors') as $failure)
+<div class="alert alert-danger" role="alert">
+ {{ $failure->errors()[0]}} at line # {{ $failure->row()}}
+</div>
+            @endforeach
+        @endif
     </div> {{--row--}}
     <div class="row">
         <div class="col-md-12">

@@ -4,9 +4,11 @@ namespace App\Imports;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
-
-class UsersImport implements ToModel
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+class UsersImport implements ToModel, WithHeadingRow, WithValidation
 {
     /**
     * @param array $row
@@ -16,10 +18,25 @@ class UsersImport implements ToModel
     public function model(array $row)
     {
         return new User([
-            'name' => $row[0],
-            'email' => $row[1],
-            'password' => Hash::make($row[2]),
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'password' => Hash::make($row['password']),
 
         ]);
+    }
+    public function rules(): array
+    {
+        return [
+            'name' => 'required',
+
+            // Above is alias for as it always validates in batches
+            '*.name' => 'required',
+            'email' => 'required|email|unique:users',
+
+            '*.email' => 'required|email|unique:users',
+            'password' => 'required',
+
+            '*.password' => 'required',
+        ];
     }
 }

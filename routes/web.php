@@ -23,5 +23,6 @@ Route::get('/', function () {
 Route::get('users/import/', [\App\Http\Controllers\UserController::class, 'import']);*/
 
 Route::get('/users', [\App\Http\Controllers\UserController::class, 'list']);
+
 Route::post('/import_user', [\App\Http\Controllers\UserController::class,
     'import_user'])->name('import_user');

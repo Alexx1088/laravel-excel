@@ -15,14 +15,11 @@ class UserController extends Controller
   }
 
   public function import() {
-
-
     /*  $filepathsource = 'users.xls';
       $filepathdes = 'users.xlsx';
       $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepathsource);
       $writer = new Xlsx($spreadsheet);
       $writer->save($filepathdes);*/
-
 /*
    try {
 
@@ -36,13 +33,9 @@ class UserController extends Controller
            dd('failure');
        }
        /* return redirect('/')->with('success', 'All good!');*/
-
-
-
     /*  } catch (FileNotFoundException $e) {
           dd($e->getMessage());
       }*/
-
      /* $check = ProverkaModel::all();
 
       try {
@@ -52,25 +45,32 @@ class UserController extends Controller
       } catch (Exception $e) {
           echo $e->getMessage();*/
      /* }*/
-
   }
-
   public function list() {
-
       $users = User::get();
-
       return view('users', compact('users'));
-
   }
 
   public function import_user(Request $request) {
   $request->validate(['excel_file' => 'required|mimes:xls']);
 
-  Excel::import(new UsersImport, $request->file('excel_file'));
+      try {
+          Excel::import(new UsersImport, $request->file('excel_file'));
+          return redirect()->back()->with('success', 'Users successfully imported');
+        /*  $import->import('import-users.xlsx');*/
 
-      return redirect()->back()->with('success', 'Users successfully imported');
+      } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+          $failures = $e->failures();
+       //   dd($failures);
+          return redirect()->back()->with('import_errors', $failures);
 
-  }
-
+         /* foreach ($failures as $failure) {
+              $failure->row(); // row that went wrong
+              $failure->attribute(); // either heading key (if using heading row concern) or column index
+              $failure->errors(); // Actual error messages from Laravel validator
+              $failure->values(); // The values of the row that has failed.
+          }*/
+      }
+         }
 
 }
