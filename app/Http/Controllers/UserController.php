@@ -4,15 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
-use App\Models\ProverkaModel;
 use App\Models\User;
-use Exception;
 use Maatwebsite\Excel\Facades\Excel;
-use Psy\Readline\Hoa\FileException;
-use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use function Symfony\Component\HttpKernel\DataCollector\getMessage;
-use function Symfony\Component\Mime\Header\get;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -22,13 +16,14 @@ class UserController extends Controller
 
   public function import() {
 
+
     /*  $filepathsource = 'users.xls';
       $filepathdes = 'users.xlsx';
       $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($filepathsource);
       $writer = new Xlsx($spreadsheet);
       $writer->save($filepathdes);*/
 
-
+/*
    try {
 
        if (Excel::import(new UsersImport, 'excel/import/users.xls')) {
@@ -44,9 +39,9 @@ class UserController extends Controller
 
 
 
-      } catch (FileNotFoundException $e) {
+    /*  } catch (FileNotFoundException $e) {
           dd($e->getMessage());
-      }
+      }*/
 
      /* $check = ProverkaModel::all();
 
@@ -55,15 +50,27 @@ class UserController extends Controller
               throw new Exception('file not found');
           }
       } catch (Exception $e) {
-          echo $e->getMessage();
-      }*/
-
-
-
+          echo $e->getMessage();*/
+     /* }*/
 
   }
 
+  public function list() {
 
+      $users = User::get();
+
+      return view('users', compact('users'));
+
+  }
+
+  public function import_user(Request $request) {
+  $request->validate(['excel_file' => 'required|mimes:xls']);
+
+  Excel::import(new UsersImport, $request->file('excel_file'));
+
+      return redirect()->back()->with('success', 'Users successfully imported');
+
+  }
 
 
 }

@@ -18,7 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('users/export/', [\App\Http\Controllers\UserController::class, 'export']);
+/*Route::get('users/export/', [\App\Http\Controllers\UserController::class, 'export']);
 
-Route::get('users/import/', [\App\Http\Controllers\UserController::class, 'import']);
+Route::get('users/import/', [\App\Http\Controllers\UserController::class, 'import']);*/
 
+Route::get('/users', [\App\Http\Controllers\UserController::class, 'list']);
+Route::post('/import_user', [\App\Http\Controllers\UserController::class,
+    'import_user'])->name('import_user');
